@@ -1,15 +1,12 @@
 ---
-title: API Reference
+title: Divido API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
-  - shell
-  - ruby
-  - python
-  - javascript
+  - Curl
+  - PHP
 
 toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='https://github.com/lord/slate'>Documentation Powered by Slate</a>
+  - <a href='integrations.divido.com'>For Specific plugins check</a>
 
 includes:
   - errors
@@ -17,223 +14,732 @@ includes:
 search: true
 ---
 
-# Introduction
+# Divido Integration Guide
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
+An overview of how to integrate Divido as a payment option in a webshop.
 
-We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
+This document assumes you're developing a reusable plugin to a shop system. If you are adding Divido to a custom built webshop or as a one off integration, some of the sections, such as the settings, might not apply to your case.
 
-This example API documentation page was created with [Slate](https://github.com/lord/slate). Feel free to edit it and use it as a base for your own API's documentation.
+Date: 19 Jan 2018 Version: 0.9
 
-# Authentication
+## The Divido Process
 
-> To authorize, use this code:
+An overview of the steps a customer goes through when checking out using Divido as the payment method:
 
-```ruby
-require 'kittn'
+|#  |Where |Webhook|What's Happening |
+|---|----------|---|-----------------|
+|1  | Merchant |N   |Choose Divido as payment method, Select financing plan and deposit percentage|
+|2  |Merchant  |N  |Confirm, redirections to ...|
+|3  |Divido    |Y  |Start of Divido application process|
+|4  |Divido    |Y  |Enter personal and banking info|
+|5  |Divido    |Y  |Pay deposit|
+|6  |Divido    |Y  |Sign Contract|
+|7  |Divido    |N  |Thank you page, redirection to ...|
+|8  |Merchant  |N  |Success Page|
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
+## Sequence Guide
+
+**TODO**
+
+# Parts of the integration 
+
+## Global settings
+To provide the merchant with the possibilites to customise their Divido integration so that it suits their business, you need to add a list of options to the payments section of the webshop settings.
+
+Below is a list of what should minimally be included in this list. More options are discussed under the section `Limiting available payment plans`.
+
+Please note that the names of the options are only guidelines and can be changed to suit the shops' platform.
+
+### API Key
+Type: String
+Example: `sandbox_ccdc53735.b04d5a8270cf7cf8d24238e5a2a5fe4f` Contains the API key necessary for communication with Dividos services.
+
+### Enabled
+Type: Bool
+For quickly enabling/disabling the Divido payment option and product page calculator
+
+### Title
+Type: String
+Lets the customer pick their own title for the payment option at checkout
+
+### Show product page widget
+Type: Bool
+Toggles the product page widget
+
+### Order status on creation
+Type: Order status
+Provide a list of possible/applicable order statuses, so that the merchant can choose what status an order created by Divido gets.
+
+### Order creation level
+Type: String
+Possible values: `ACCEPTED`, `SIGNED`
+Lets the merchant choose when in the Divido process an order is created/escalated.
+
+### Send automatic fulfilment update
+Type: Bool
+Toggles whether or not the plugin sends an automatic update call to Divido, when a Divido order reaches a certain status.
+
+### Fulfilment status
+Type: Order status
+If "Send automatic fulfilment update" is True, this is the order status it would react to.
+
+### Cart amount limit
+Type: Float
+Lets the merchant define an amount, under which a cart is not eligible to be paid for with Divido.
+
+### Product selection
+Options: All products, Products above specified price
+Above is the two required options, see more under "Limiting available payment plans"
+
+### Product price limit
+Type: Float
+If "Product selection" is set to "Products above specified price", this is the price limit against which products are checked.
+
+## Merchant specific javascript
+For every customer, Divido provides a javascript generated specifically for them. This javascript contains functionality for showing dynamic calculators and widgets, as well as info about available financing products. Since this script is regenerated when the customers plans are updated, it should not be hosted locally, but sourced from Dividos CDN.
+
+The URL of the script follows this pattern: `//cdn.divido.com/calculator/[API KEY].js` The `[API KEY]` placeholder is replaced by the part of the API key up to the period.
+
+So if the API key is `sandbox_ccdc53735.b04d5a8270cf7cf8d24238e5a2a5fe4f`
+The part we use for the javascript URL is `sandbox_ccdc53735`
+
+Example: `//cdn.divido.com/calculator/sandbox_ccdc53735.js`
+
+This script needs to be included on the product page and the checkout page and anywhere else you want to display a Divido calculator or widget.
+
+## Product page widget
+
+The Divido product page widget allows the customer to get a quick overview of what financing options are available on that specific product and what different levels of deposit will do for the overall cost.
+
+In its most basic form, it looks like this:
+> In its most basic form, it looks like this HTML:
+
+```html
+ <div data-divido-widget data-divido-amount="[PRODUCT PRICE]"></div>
+ ```
+
+**Example: TODO -INSERT EXAMPLE HERE!!!**
+
+We suggest you place it directly under the price on the product page. Don't forget to take the values of the "Product selection" and "Product price limit" into account when deciding whether or not to show it!
+
+It's only the tag that's needed, the Divido javascript will take care of the rest.
+
+## Checkout form
+
+When the customer has chosen Divido as their payment option, you need to provide them with a form where they can choose financing, product and set a deposit amount. 
+
+> This is what the markup looks like in our Magento plugin HTML:
+
+```html
+<fieldset data-divido-calculator data-divido-amount="[GRAND TOTAL]">
+     <h1>Pay in instalments</h1>
+     <dl>
+         <dt><span data-divido-choose-finance data-divido-label="Choose your plan"
+ data-divido-form="divido_finance"></span></dt>
+         <dd><span class="divido-deposit" data-divido-choose-deposit data-divido-la
+ bel="Choose your deposit" data-divido-form="divido_deposit"></span></dd>
+     </dl>
+     <div class="description">
+         <strong>
+             <span data-divido-agreement-duration></span> monthly payments of <span
+  data-divido-monthly-instalment></span>
+         </strong>
+     </div>
+     <div class="divido-info">
+         <dl>
+             <dt>Term</dt>
+             <dd><span data-divido-agreement-duration></span> months</dd>
+             <dt>Monthly instalment</dt>
+             <dd><span data-divido-monthly-instalment></span></dd>
+             <dt>Deposit</dt>
+             <dd><span data-divido-deposit></span></dd>
+             <dt>Cost of credit</dt>
+             <dd><span data-divido-finance-cost-rounded></span></dd>
+             <dt>Total payable</dt>
+             <dd><span data-divido-total-payable-rounded></span></dd>
+             <dt>Total interest APR</dt>
+             <dd><span data-divido-interest-rate></span></dd>
+          </dl> 
+      </div>
+     <div class="clear"></div>
+     <p>You will be redirected to Divido to complete this finance application when
+ you place your order</p>
+ </fieldset>
 ```
 
-```python
-import kittn
+Again, the Divido javascript will take care of making this form interactive. When the customer has chosen financing plan and deposit, you need to collect that data and send it, along with additional information about the order and the customer, to make a credit request.
 
-api = kittn.authorize('meowmeowmeow')
-```
+## Credit request
 
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
-```
+The first step in a credit application starts with a credit request. It's simply a HTTP POST call to our web service, containing customer and order data that's used as the basis for the credit application.
 
-```javascript
-const kittn = require('kittn');
+You can see the full documentation for this call in the credit request section of our API documentation. Please note that the host name differs depending on whether you're using a live or sandbox key, see API
+endpoints.
 
-let api = kittn.authorize('meowmeowmeow');
-```
+If the call is correctly done, the response will contain a field named "url". To start the credit application, redirect the user to that URL.
 
-> Make sure to replace `meowmeowmeow` with your API key.
+The customer has now left the merchants shop and is walked through a series of steps in the Divido credit application process. Each of those steps results in an update call back to your server, Webhooks.
 
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
+## Handling Webhooks (automatic updates from Divido)
 
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
+Whenever the customer completes a step in the credit application process, an HTTP POST call is sent to the URL specified in the credit request field "response_url".
 
-`Authorization: meowmeowmeow`
+These are the events we send updates for, and a list of their possible statuses:
 
-<aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
-</aside>
++ Basic application is finished 
+    + ACCEPTED
+    + REFERRED 
+    + DECLINED
 
-# Kittens
++ Basic application has been cancelled by customer 
+    + CANCELLED
++ Deposit has been paid 
+    + DEPOSIT-PAID
++ Contracts have been signed 
+    + SIGNED
++ Merchant marks order as fulfilled 
+    + ACTION-LENDER
 
-## Get All Kittens
+When the application is done, the information is sent to the underwriter for review. This is a mostly automated process and the application gets accepted or declined directly. 
 
-```ruby
-require 'kittn'
+In some cases, however, the underwriter will have to do a manual review of the application and its status is set to "referred". This will pause the application process and the customer will be given the choice to wait for the approval process to finish or return to the merchant. 
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
+When referred, the approval process takes up to 3 days and when it's done, the customer gets an email with a link that places them right where they left off in the application process.
+> Here's an example of the payload:
 
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
-
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
-```
-
-> The above command returns JSON structured like this:
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
-]
-```
-
-This endpoint retrieves all kittens.
-
-### HTTP Request
-
-`GET http://example.com/api/kittens`
-
-### Query Parameters
-
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
-
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+```json         
+   {
+     "application": 'C84047A6D-89B2-FECF-D2B4-168444F5178C',
+     "reference": 100024,
+     "status": 'SIGNED',
+     "live": true,
+     "metadata":  {
+        "Invoice Number":"844001",
+        "Order Number":"100019"
+     }
 }
 ```
 
-This endpoint retrieves a specific kitten.
+Field for field, this is the contents:
 
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
+**application**: The ID of the Application, we recommend you save this for further reference.
+
+**reference**: Third part reference, if sent with credit request
+status: This is the actual status update!
+
+**live**: Whether or not this comes from our live environment (false = sandbox environment)
+
+**metadata**: This contains whatever you sent us in in the metadata field when you did the credit request.
+
+## Security
+To make sure no one is falsely sending you status updates, you need to verify that the updates are actually from us and that they refer to a actual orders. To acheive this, we usually create a unique salt, store it together with the order id, create a hash based on the salted order id and send the hash and the order id in the credit request metadata. When the status updates comes back, we salt the order id, hashes it and checks it agains the hash that's in the metadata.
+
+## Limiting available payment plans
+Merchants often need to tailor the list of available financing plans to suit their current situation. To allow this you need to provide a way to limit the overall available financing plans and often more granualar settings targeting categories, brands or individual products.
+
+What's needed really comes down to the individual merchant. Here we will detail the solution we ship with our generic Magento plugin.
+
+### Global settings
+
+**Shown plans** Options: All plans, Selected plans
+
+### Available plans
+Type: List of strings
+
+Dependencies: Only shown if **Shown plans** is set to "Selected plans" Multiple select box/List of checkboxes with the result from a call to our API (http://developer.divido.com/#resources-finances).
+
+### Product selection
+Extra option: Selected products
+When this is option is chosen, a product is only available on finance if it has specifically been enabled. Used in combination with Shown plans set to "Selected plans".
+
+### Product settings 
+
+### Available on finance
+Options: Default settings, Selected plans
+
+### Available plans
+Type: List of strings
+Dependencies: Only shown if Available on finance is set to "Selected plans" Multiple select box/List of checkboxes with the result from a call to our API (http://developer.divido.com/#resources-finances).
+
+### Calculating available financing plans
+
+You need to calculate the available financing plans on both the product page. How you do it on the checkout page depends on your use case, but we will show how we do it in our generic plugins as an example.
+
+### Product
+
+> Naive pseudo code:
+
+```
+ If global setting "Product selection" is "Selected products"
+     If product setting "Available plans" is "Default settings"
+         Let Plans be global setting "Available plans"
+     Else
+         Let Plans be product setting "Available plans"
+     Let Plans be global setting "Available plans"
+ Return Plans that has a minimum price lower than the product price
+```
+
+### Cart
+> Naive pseudo code:
+
+```
+ For each product in the cart
+     Collect all plans for the product
+ Return all plans that has a minimum price lower than the full order value
+ Else
+ ```
+
+
+# API Documentation
+
+## Get all applications
 
 ### HTTP Request
+`GET /applications`
 
-`GET http://example.com/kittens/<ID>`
+### Request:
 
-### URL Parameters
++ Headers:
+    + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
+    + `Accept`: application/json
+    
++ Url Params:
+    + `filter`: current_status:proposal|declined
+    + `page`: 1
+    + `sort`: current_status
 
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
++ Body:
+    No specific body attributes needed.
 
-## Delete a Specific Kitten
 
-```ruby
-require 'kittn'
+### Response:
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
-```
++ Status: **0**
 
-```python
-import kittn
++ Body:
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
-```
 
-```shell
-curl "http://example.com/api/kittens/2"
-  -X DELETE
-  -H "Authorization: meowmeowmeow"
-```
+## Get a single application
 
-```javascript
-const kittn = require('kittn');
+### HTTP Request
+`GET /applications/<APPLICATION_ID>`
 
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
-```
+**
 
-> The above command returns JSON structured like this:
+### Request:
+
++ Headers:
+    + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
+    
++ Url Params:
+    + `include`: deposits,application_histories,language
+
++ Body:
+    No specific body attributes needed.
+
+***
+
+
+
+## Create an application
+
+### HTTP Request
+`POST /applications`
+
+**
+
+### Request:
+
++ Headers:
+    + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
+    + `Accept`: application/json
+    
++ Url Params:
+    No specific query parameters needed.
+
++ Body:
+
+> The Above returns Json Like this:
 
 ```json
 {
-  "id": 2,
-  "deleted" : ":("
+    "token": "example-token-sdihudsh98ds",
+    "event": "application_store",
+    "merchant_finance_id": "F4CA2E40A-B544-F75F-825A-FFF7613E7230",
+    "merchant_channel_id": "C368EC936-60B5-CD0A-5FCB-7F3867B8FA9D",
+    "finalisation_required": false,
+    "deposit_percentage": 0.02,
+    "age": 40,
+    "country_id": "GB",
+    "currency_id": "GBP",
+    "language_id": "en",
+    "form_data": {
+        "firstName": "ann",
+        "middleNames": "",
+        "lastName": "heselden",
+        "phoneNumber": "07512345678"
+    },
+    "order": {
+        "items": [
+            {
+                "sku": "",
+                "name": "Tax",
+                "quantity": 1,
+                "price": 4.94,
+                "vat": 0,
+                "unit": "",
+                "image": "",
+                "attributes": null
+            },
+            {
+                "sku": "",
+                "name": "Shipping Total",
+                "quantity": 1,
+                "price": 8.05,
+                "vat": 0,
+                "unit": "",
+                "image": "",
+                "attributes": null
+            }
+        ]
+    },
+    "amount": 10000,
+    "deposit_percantage": 0.1,
+    "deposit_amount": 10000,
+    "metadata": {
+        "foo": "bar"
+    },
+    "merchant_reference": "made-up-referefce",
+    "merchant_redirect_url": "http://example.com",
+    "merchant_checkout_url": "http://example.com",
+    "merchant_response_url": "http://example.com"
 }
 ```
 
-This endpoint deletes a specific kitten.
+***
+
+
+
+## Update an application
 
 ### HTTP Request
+`PUT /applications/<APPLICATION_ID>`
 
-`DELETE http://example.com/kittens/<ID>`
+**
 
-### URL Parameters
+### Request:
 
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to delete
++ Headers:
+    + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
+    + `Accept`: application/json
+    
++ Url Params:
+    No specific query parameters needed.
+
++ Body:
+    No specific body attributes needed.
+
+***
+
+
+
+## Get all activations 
+
+### HTTP Request
+`GET /applications/<APPLICATION_ID>/activations`
+
+**
+
+### Request:
+
++ Headers:
+    + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
+    + `Accept`: application/json
+    
++ Url Params:
+    No specific query parameters needed.
+
++ Body:
+    No specific body attributes needed.
+
+***
+
+
+
+## Get a specific activation
+
+### HTTP Request
+`GET /applications/<APPLICATION_ID>/activations/<ACTIVATION_ID>`
+
+**
+
+### Request:
+
++ Headers:
+    + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
+    + `Accept`: application/json
+    
++ Url Params:
+    No specific query parameters needed.
+
++ Body:
+    No specific body attributes needed.
+
+***
+
+
+
+## Create an activation
+
+### HTTP Request
+`POST /applications/<APPLICATION_ID>/activations`
+
+**
+
+### Request:
+
++ Headers:
+    + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
+    + `Accept`: application/json
+    
++ Url Params:
+    No specific query parameters needed.
+
++ Body:
+    No specific body attributes needed.
+
+***
+
+
+
+## Get all cancellations
+
+### HTTP Request
+`GET /applications/<APPLICATION_ID>/cancellations`
+
+**
+
+### Request:
+
++ Headers:
+    + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
+    + `Accept`: application/json
+    
++ Url Params:
+    No specific query parameters needed.
+
++ Body:
+    No specific body attributes needed.
+
+***
+
+
+
+## Get a specific cancellation
+
+### HTTP Request
+`GET /applications/<APPLICATION_ID>/cancellations/<CANCELLATION_ID>`
+
+**
+
+### Request:
+
++ Headers:
+    + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
+    + `Accept`: application/json
+    
++ Url Params:
+    No specific query parameters needed.
+
++ Body:
+    No specific body attributes needed.
+
+***
+
+
+
+## Create a cancellation
+
+### HTTP Request
+`POST /applications/<APPLICATION_ID>/cancellations`
+
+**
+
+### Request:
+
++ Headers:
+    + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
+    + `Accept`: application/json
+    
++ Url Params:
+    No specific query parameters needed.
+
++ Body:
+    No specific body attributes needed.
+
+***
+
+
+
+## Get all refunds 
+
+### HTTP Request
+`GET /applications/<APPLICATION_ID>/refunds`
+
+**
+
+### Request:
+
++ Headers:
+    + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
+    + `Accept`: application/json
+    
++ Url Params:
+    No specific query parameters needed.
+
++ Body:
+    No specific body attributes needed.
+
+***
+
+
+
+## Get a specific refund
+
+### HTTP Request
+`GET /applications/<APPLICATION_ID>/refunds/<REFUND_ID>`
+
+**
+
+### Request:
+
++ Headers:
+    + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
+    + `Accept`: application/json
+    
++ Url Params:
+    No specific query parameters needed.
+
++ Body:
+    No specific body attributes needed.
+
+***
+
+
+
+## Create a Refund
+
+### HTTP Request
+`POST /applications/<APPLICATION_ID>/refunds`
+
+**
+
+### Request:
+
++ Headers:
+    + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
+    + `Accept`: application/json
+    
++ Url Params:
+    No specific query parameters needed.
+
++ Body:
+    No specific body attributes needed.
+
+***
+
+
+
+## Get all finanace Plans
+
+### HTTP Request
+`GET /finance-plans`
+
+**
+
+### Request:
+
++ Headers:
+    + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
+    + `Accept`: application/json
+    
++ Url Params:
+    No specific query parameters needed.
+
++ Body:
+    No specific body attributes needed.
+
+***
+
+### Response:
+
++ Status: **0**
+
++ Body:
+
+***
+
+## Service Healthcheck
+### HTTP Request
+`GET /health`
+
+**
+
+### Request:
+
++ Headers:
+    + `Accept`: application/json
+    
++ Url Params:
+    No specific query parameters needed.
+
++ Body:
+    No specific body attributes needed.
+
+***
+
+
+
+## Get all settlements
+
+### HTTP Request
+`GET /settlements`
+
+**
+
+### Request:
+
++ Headers:
+    + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
+    + `Accept`: application/json
+    
++ Url Params:
+    + `sort`: currency
+
++ Body:
+    No specific body attributes needed.
+
+***
+
+
+
+## Retrieve a settlement
+### HTTP Request
+`GET /settlements/<SETTLEMENT_ID>`
+
+**
+
+### Request:
+
++ Headers:
+    + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
+    + `Accept`: application/json
+    
++ Url Params:
+    No specific query parameters needed.
+
++ Body:
+    No specific body attributes needed.
+
+***
 

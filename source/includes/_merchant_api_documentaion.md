@@ -219,11 +219,11 @@ Returns a single applicaiton
     + `Accept`: application/json
     
 + Url Params:
-    No specific query parameters needed.
+    + `apiKey`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
 
 + Body:
 
-> The Above returns Json Like this:
+> A typical payload would look like this:
 
 ```json
 {
@@ -279,10 +279,7 @@ Returns a single applicaiton
     "merchant_response_url": "http://example.com"
 }
 ```
-
 ***
-
-
 
 ## Update an application
 
@@ -296,16 +293,27 @@ Returns a single applicaiton
 + Headers:
     + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
     + `Accept`: application/json
+    + `Content-type`: application/json
     
 + Url Params:
     No specific query parameters needed.
 
 + Body:
     No specific body attributes needed.
+> A standard payload would look like this
 
+```json
+{
+  "token": "example-token-sdihudsh98ds",
+  "event": "application_update",
+  "form_data": { 
+    "firstName" : "Bob",
+    "middleNames" : "TEst",
+    "lastName" : "heselden"
+  }
+}
+```
 ***
-
-
 
 ## Get all activations 
 
@@ -342,12 +350,64 @@ Returns a single applicaiton
 + Headers:
     + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
     + `Accept`: application/json
-    
+    + `Content-type`: application/json
+
 + Url Params:
     No specific query parameters needed.
 
 + Body:
     No specific body attributes needed.
+
+> This will return 
+
+```json
+{
+  "data": {
+    "type": "activations",
+    "id": "A52B3606-01EE-11E8-B54D-FDCF2114AB2A",
+    "attributes": {
+      "amount": 100000,
+      "status": "REQUESTED",
+      "data": {
+        "items": [
+          {
+            "sku": "",
+            "name": "Tax",
+            "quantity": 1,
+            "price": 4.94000000000000039079850466805510222911834716796875,
+            "vat": 0,
+            "unit": "",
+            "image": "",
+            "attributes": null
+          }
+        ]
+      },
+      "reference": "foo ref",
+      "comment": "foo com",
+      "image_upload_urls": [
+        {
+          "filename": "young-kitten.jpg",
+          "url": "uploads\/documents\/A52D907C-01EE-11E8-B09A-3F280253A9FA"
+        }
+      ]
+    },
+    "relationships": {
+      "application": {
+        "data": {
+          "type": "applications",
+          "id": "6A050C92-01E3-11E8-B73A-0BC7A7D1BD9B"
+        },
+        "links": {
+          "related": "http:\/\/127.0.0.1:8004\/applications\/6A050C92-01E3-11E8-B73A-0BC7A7D1BD9B"
+        }
+      }
+    },
+    "links": {
+      "self": "http:\/\/127.0.0.1:8004\/applications\/6A050C92-01E3-11E8-B73A-0BC7A7D1BD9B\/activations\/A52B3606-01EE-11E8-B54D-FDCF2114AB2A"
+    }
+  }
+}
+```
 
 ***
 

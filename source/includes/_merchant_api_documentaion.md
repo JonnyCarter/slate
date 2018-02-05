@@ -1,21 +1,14 @@
 # Merchant API Documentation
 
-# API ENDPOINTS
+## API ENDPOINTS
 
 To use the Divido API to query data, you will need to send a request to the correct endpoint. Request endpoints should depend on whether you wish to query the live or sandbox environment:
-Sandbox: https://merchant-api.api.dev.divido.net
-Live: https://merchant-api.api.divido.net
 
-## HTTP RESPONSE CODES
++ Sandbox: https://merchant-api.api.dev.divido.net
 
-You may encounter the following response codes. Any unsuccessful response codes will contain more information to help you identify the cause of the problem.
-+ 200 The request has succeeded.
++ Live: https://merchant-api.api.divido.net
 
-+ 201 The request has been fulfilled and resulted in a new resource being created. The newly created resource can be referenced by the URI(s) returned in the entity of the response, with the most specific URI for the resource given by a Location header field.
 
-+ 404 Not Found. The requested resource was not found. The response body will explain which resource was not found.
-
-+ 500 Internal Server Error. The server encountered an error while processing your request and failed. Please report this to the Divido support team.
 
 
 ## Get all applications
@@ -279,7 +272,6 @@ Returns a single applicaiton
     "merchant_response_url": "http://example.com"
 }
 ```
-***
 
 ## Update an application
 
@@ -299,7 +291,7 @@ Returns a single applicaiton
     No specific query parameters needed.
 
 + Body:
-    No specific body attributes needed.
+
 > A standard payload would look like this
 
 ```json
@@ -313,7 +305,6 @@ Returns a single applicaiton
   }
 }
 ```
-***
 
 ## Get all activations 
 

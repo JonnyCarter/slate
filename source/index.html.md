@@ -10,8 +10,9 @@ toc_footers:
 
 includes:
   - integration_guide
+  - response_codes
   - merchant_api_documentaion
-  - errors
+
 
 search: true
 ---

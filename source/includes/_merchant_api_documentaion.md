@@ -1,6 +1,26 @@
 # Merchant API Documentation
 
+# API ENDPOINTS
+
+To use the Divido API to query data, you will need to send a request to the correct endpoint. Request endpoints should depend on whether you wish to query the live or sandbox environment:
+Sandbox: https://merchant-api.api.dev.divido.net
+Live: https://merchant-api.api.divido.net
+
+## HTTP RESPONSE CODES
+
+You may encounter the following response codes. Any unsuccessful response codes will contain more information to help you identify the cause of the problem.
++ 200 The request has succeeded.
+
++ 201 The request has been fulfilled and resulted in a new resource being created. The newly created resource can be referenced by the URI(s) returned in the entity of the response, with the most specific URI for the resource given by a Location header field.
+
++ 404 Not Found. The requested resource was not found. The response body will explain which resource was not found.
+
++ 500 Internal Server Error. The server encountered an error while processing your request and failed. Please report this to the Divido support team.
+
+
 ## Get all applications
+
+Returns all applications for the merchant
 
 ### HTTP Request
 `GET /applications`
@@ -15,6 +35,8 @@
     + `filter`: current_status:proposal|declined
     + `page`: 1
     + `sort`: current_status
+    + `include`: merchant_channel
+    + `apiKey`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
 
 + Body:
     No specific body attributes needed.
@@ -22,13 +44,145 @@
 
 ### Response:
 
-+ Status: **0**
+> A typical Json response would look like this:
 
-+ Body:
-
+```json
+{
+  "meta": {
+    "count": 25,
+    "current_page": 1,
+    "first_item": 1,
+    "has_more_pages": true,
+    "last_item": 25,
+    "last_page": 77,
+    "per_page": 25,
+    "total": 1905
+  },
+  "links": {
+    "self": "http:\/\/127.0.0.1:8004\/applications?page=1",
+    "next": "http:\/\/127.0.0.1:8004\/applications?page=2"
+  },
+  "data": [
+    {
+      "type": "applications",
+      "id": "2de1acad-748e-4249-85a4-a5ea54e72d84",
+      "attributes": {
+        "token": "7d81dd1790b23b4e21ac290b5c57024a",
+        "finalised": 0,
+        "finalisation_required": 0,
+        "current_status": "PROPOSAL",
+        "lender_reference": "",
+        "lender_loan_reference": "",
+        "form_data": {
+          "first_name": "Ann",
+          "middle_names": "",
+          "last_name": "Heselden",
+          "phone_number": "02012312312",
+          "email": "hallsten@me.com"
+        },
+        "order": {
+          "product_data": [
+            {
+              "sku": "",
+              "name": "Goods",
+              "quantity": 1,
+              "price": 1000,
+              "vat": 0,
+              "unit": "",
+              "image": "",
+              "attributes": "1"
+            }
+          ],
+          "refunds": [],
+          "activations": [],
+          "cancellations": []
+        },
+        "amounts": {
+          "activatable_amount": 65000,
+          "activated_amount": 0,
+          "cancelable_amount": 65000,
+          "cancelled_amount": 0,
+          "original_credit_amount": 65000,
+          "current_credit_amount": -34000,
+          "deposit_amount": 35000,
+          "monthly_payment_amount": 5417,
+          "purchase_price_amount": 1000,
+          "refundable_amount": 0,
+          "refunded_amount": 0,
+          "total_repayable_amount": 100000
+        },
+        "metadata": [],
+        "activation_status": "AWAITING-ACTIVATION",
+        "deposit_status": "UNPAID",
+        "merchant_reference": "",
+        "urls": {
+          "merchant_redirect_url": "",
+          "merchant_checkout_url": "",
+          "merchant_notification_url": "",
+          "application_url": "todo"
+        },
+        "created_at": "2017-12-20T11:02:24+00:00",
+        "updated_at": "2017-12-20T11:02:24+00:00"
+      },
+      "relationships": {
+        "country": {
+          "data": {
+            "type": "countries",
+            "id": "GB"
+          }
+        },
+        "currency": {
+          "data": {
+            "type": "currencies",
+            "id": "GBP"
+          }
+        },
+        "deposits": {
+          "data": []
+        },
+        "application_histories": {
+          "data": [
+            {
+              "type": "application-histories",
+              "id": "2c012aeb-cce7-489a-a8c7-16db9d8cbf7a"
+            }
+          ]
+        },
+        "language": {
+          "data": {
+            "type": "languages",
+            "id": "en"
+          }
+        },
+        "merchant": {
+          "data": {
+            "type": "merchants",
+            "id": "M9B458218-0C86-6121-1315-897A84A60E54"
+          }
+        },
+        "merchant_channel": {
+          "data": {
+            "type": "merchant-channels",
+            "id": "CFAD1A99F-E377-5C4E-B4E7-20E48E3F8D41"
+          }
+        },
+        "finance_plan": {
+          "data": {
+            "type": "finance-plans",
+            "id": "FBB4B79B2-6C98-127C-8119-66516B188E9B"
+          }
+        }
+      },
+      "links": {
+        "self": "http:\/\/127.0.0.1:8004\/applications\/2de1acad-748e-4249-85a4-a5ea54e72d84"
+      }
+    },
+    ...
+```
 
 ## Get a single application
 
+Returns a single applicaiton
 ### HTTP Request
 `GET /applications/<APPLICATION_ID>`
 
@@ -41,6 +195,8 @@
     
 + Url Params:
     + `include`: deposits,application_histories,language
+    + `apiKey`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
+
 
 + Body:
     No specific body attributes needed.

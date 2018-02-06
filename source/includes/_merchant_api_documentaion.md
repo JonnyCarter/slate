@@ -1,5 +1,7 @@
 # Merchant API Documentation
 
+The merchant API is a set of dedicated endpoints to allow custom integrations through a consistent stable interface
+
 ## API ENDPOINTS
 
 To use the Divido API to query data, you will need to send a request to the correct endpoint. Request endpoints should depend on whether you wish to query the live or sandbox environment:
@@ -37,7 +39,7 @@ Returns all applications for the merchant
 
 ### Response:
 
-> A typical Json response would look like this:
+> Example Response:
 
 ```json
 {
@@ -176,6 +178,7 @@ Returns all applications for the merchant
 ## Get a single application
 
 Returns a single applicaiton
+
 ### HTTP Request
 `GET /applications/<APPLICATION_ID>`
 
@@ -187,12 +190,64 @@ Returns a single applicaiton
     + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
     
 + Url Params:
-    + `include`: deposits,application_histories,language
+    + `include`: deposits,application_histories,language,activations
     + `apiKey`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
 
 
 + Body:
     No specific body attributes needed.
+
+> Example Response:
+
+```json
+
+{
+  "data": {
+    "type": "activations",
+    "id": "A52B3606-01EE-11E8-B54D-FDCF2114AB2A",
+    "attributes": {
+      "amount": 100000,
+      "status": "REQUESTED",
+      "data": {
+        "items": [
+          {
+            "sku": "",
+            "name": "Tax",
+            "quantity": 1,
+            "price": 4.94000000000000039079850466805510222911834716796875,
+            "vat": 0,
+            "unit": "",
+            "image": "",
+            "attributes": null
+          }
+        ]
+      },
+      "reference": "foo ref",
+      "comment": "foo com",
+      "image_upload_urls": [
+        {
+          "filename": "young-kitten.jpg",
+          "url": "uploads\/documents\/A52D907C-01EE-11E8-B09A-3F280253A9FA"
+        }
+      ]
+    },
+    "relationships": {
+      "application": {
+        "data": {
+          "type": "applications",
+          "id": "6A050C92-01E3-11E8-B73A-0BC7A7D1BD9B"
+        },
+        "links": {
+          "related": "http:\/\/127.0.0.1:8004\/applications\/6A050C92-01E3-11E8-B73A-0BC7A7D1BD9B"
+        }
+      }
+    },
+    "links": {
+      "self": "http:\/\/127.0.0.1:8004\/applications\/6A050C92-01E3-11E8-B73A-0BC7A7D1BD9B\/activations\/A52B3606-01EE-11E8-B54D-FDCF2114AB2A"
+    }
+  }
+}
+```
 
 ***
 
@@ -202,8 +257,6 @@ Returns a single applicaiton
 
 ### HTTP Request
 `POST /applications`
-
-**
 
 ### Request:
 
@@ -216,9 +269,9 @@ Returns a single applicaiton
 
 + Body:
 
-> A typical payload would look like this:
+> Example Payload
 
-```json
+```
 {
     "token": "example-token-sdihudsh98ds",
     "event": "application_store",
@@ -292,9 +345,9 @@ Returns a single applicaiton
 
 + Body:
 
-> A standard payload would look like this
+> Example Payload
 
-```json
+```
 {
   "token": "example-token-sdihudsh98ds",
   "event": "application_update",
@@ -349,7 +402,7 @@ Returns a single applicaiton
 + Body:
     No specific body attributes needed.
 
-> This will return 
+> Example Response
 
 ```json
 {
@@ -588,17 +641,77 @@ Returns a single applicaiton
 
 ### Response:
 
-+ Status: **0**
+> Example Response:
 
-+ Body:
+```json
+{
+  "meta": {
+    "count": 10,
+    "current_page": 2,
+    "first_item": 26,
+    "has_more_pages": false,
+    "last_item": 35,
+    "last_page": 2,
+    "per_page": 25,
+    "total": 35
+  },
+  "links": {
+    "self": "http:\/\/127.0.0.1:8004\/finance-plans?page=2",
+    "prev": "http:\/\/127.0.0.1:8004\/finance-plans?page=1"
+  },
+  "data": [
+    {
+      "type": "finance-plans",
+      "id": "F8C963716-2B0B-5E69-D50D-A5E7FF88425C",
+      "attributes": {
+        "agreement_duration_months": 6,
+        "deferral_period_months": 0,
+        "interest_rate_percentage": "0",
+        "deposit": {
+          "maximum_percentage": 50,
+          "minimum_percentage": 1
+        },
+        "credit_amount": {
+          "minimum_amount": 250,
+          "maximum_amount": null
+        },
+        "fees": {
+          "instalment_fee_amount": 0,
+          "setup_fee_amount": 0
+        },
+        "description": "6 month 0% demo",
+        "calculation_family": "f0258b6685684c113bad94d91b8fa02a",
+        "lender_code": "123"
+      },
+      "relationships": {
+        "country": {
+          "data": {
+            "type": "countries",
+            "id": "GB"
+          }
+        },
+        "currency": {
+          "data": {
+            "type": "currencies",
+            "id": "GBP"
+          }
+        }
+      },
+      "links": {
+        "self": "http:\/\/127.0.0.1:8004\/finance-plans\/F8C963716-2B0B-5E69-D50D-A5E7FF88425C"
+      }
+    },
+ ...
+  ]
+}
+
+```
 
 ***
 
 ## Service Healthcheck
 ### HTTP Request
 `GET /health`
-
-**
 
 ### Request:
 
@@ -611,6 +724,21 @@ Returns a single applicaiton
 + Body:
     No specific body attributes needed.
 
+> Example Response:
+
+```
+HTTP/1.1 200 OK
+Server: nginx/1.13.8
+Date: Tue, 30 Jan 2018 09:51:39 GMT
+Content-Type: text/html; charset=UTF-8
+Content-Length: 2
+Connection: close
+X-Powered-By: PHP/7.1.9
+Strict-Transport-Security: max-age=31536000
+
+OK
+```
+
 ***
 
 
@@ -619,8 +747,6 @@ Returns a single applicaiton
 
 ### HTTP Request
 `GET /settlements`
-
-**
 
 ### Request:
 
@@ -642,7 +768,6 @@ Returns a single applicaiton
 ### HTTP Request
 `GET /settlements/<SETTLEMENT_ID>`
 
-**
 
 ### Request:
 

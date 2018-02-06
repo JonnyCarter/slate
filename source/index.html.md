@@ -6,7 +6,7 @@ language_tabs: # must be one of https://git.io/vQNgJ
   - PHP
 
 toc_footers:
-  - <a href='https://integrations.divido.com' targer="_blank">Plugin Installation Instructions</a>
+  - <a href='https://integrations.divido.com' target="_blank">Plugin Installation Instructions</a>
 
 includes:
   - integration_guide

@@ -26,7 +26,7 @@ Returns all applications for the merchant
     + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
     + `Accept`: application/json
     
-+ Url Params:
++ Parameters:
     + `filter`: current_status:proposal|declined
     + `page`: 1
     + `sort`: current_status
@@ -189,7 +189,7 @@ Returns a single applicaiton
 + Headers:
     + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
     
-+ Url Params:
++ Parameters:
     + `include`: deposits,application_histories,language,activations
     + `apiKey`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
 
@@ -264,7 +264,7 @@ Returns a single applicaiton
     + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
     + `Accept`: application/json
     
-+ Url Params:
++ Parameters:
     + `apiKey`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
 
 + Body:
@@ -340,7 +340,7 @@ Returns a single applicaiton
     + `Accept`: application/json
     + `Content-type`: application/json
     
-+ Url Params:
++ Parameters:
     No specific query parameters needed.
 
 + Body:
@@ -372,7 +372,7 @@ Returns a single applicaiton
     + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
     + `Accept`: application/json
     
-+ Url Params:
++ Parameters:
     No specific query parameters needed.
 
 + Body:
@@ -396,7 +396,7 @@ Returns a single applicaiton
     + `Accept`: application/json
     + `Content-type`: application/json
 
-+ Url Params:
++ Parameters:
     No specific query parameters needed.
 
 + Body:
@@ -470,7 +470,7 @@ Returns a single applicaiton
     + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
     + `Accept`: application/json
     
-+ Url Params:
++ Parameters:
     No specific query parameters needed.
 
 + Body:
@@ -493,7 +493,7 @@ Returns a single applicaiton
     + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
     + `Accept`: application/json
     
-+ Url Params:
++ Parameters:
     No specific query parameters needed.
 
 + Body:
@@ -516,7 +516,7 @@ Returns a single applicaiton
     + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
     + `Accept`: application/json
     
-+ Url Params:
++ Parameters:
     No specific query parameters needed.
 
 + Body:
@@ -539,7 +539,7 @@ Returns a single applicaiton
     + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
     + `Accept`: application/json
     
-+ Url Params:
++ Parameters:
     No specific query parameters needed.
 
 + Body:
@@ -562,7 +562,7 @@ Returns a single applicaiton
     + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
     + `Accept`: application/json
     
-+ Url Params:
++ Parameters:
     No specific query parameters needed.
 
 + Body:
@@ -585,7 +585,7 @@ Returns a single applicaiton
     + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
     + `Accept`: application/json
     
-+ Url Params:
++ Parameters:
     No specific query parameters needed.
 
 + Body:
@@ -608,7 +608,7 @@ Returns a single applicaiton
     + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
     + `Accept`: application/json
     
-+ Url Params:
++ Parameters:
     No specific query parameters needed.
 
 + Body:
@@ -631,7 +631,7 @@ Returns a single applicaiton
     + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
     + `Accept`: application/json
     
-+ Url Params:
++ Parameters:
     No specific query parameters needed.
 
 + Body:
@@ -718,7 +718,7 @@ Returns a single applicaiton
 + Headers:
     + `Accept`: application/json
     
-+ Url Params:
++ Parameters:
     No specific query parameters needed.
 
 + Body:
@@ -754,7 +754,7 @@ OK
     + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
     + `Accept`: application/json
     
-+ Url Params:
++ Parameters:
     + `sort`: currency
 
 + Body:
@@ -775,7 +775,7 @@ OK
     + `X-DIVIDO-API-KEY`: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c
     + `Accept`: application/json
     
-+ Url Params:
++ Parameters:
     No specific query parameters needed.
 
 + Body:

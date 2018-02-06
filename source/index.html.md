@@ -12,8 +12,6 @@ includes:
   - integration_guide
   - response_codes
   - merchant_api_documentaion
-
-
 search: true
 ---
 

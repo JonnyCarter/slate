@@ -2,7 +2,7 @@
 
 The merchant API is a set of dedicated endpoints to allow custom integrations through a consistent stable interface
 
-## API ENDPOINTS
+## API Endpoints
 
 To use the Divido API to query data, you will need to send a request to the correct endpoint. Request endpoints should depend on whether you wish to query the live or sandbox environment:
 

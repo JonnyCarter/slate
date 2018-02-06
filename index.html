@@ -260,8 +260,14 @@
               </ul>
           </li>
           <li>
-            <a href="#api-documentation" class="toc-h1 toc-link" data-title="API Documentation">API Documentation</a>
+            <a href="#http-response-codes" class="toc-h1 toc-link" data-title="HTTP Response Codes">HTTP Response Codes</a>
+          </li>
+          <li>
+            <a href="#merchant-api-documentation" class="toc-h1 toc-link" data-title="Merchant API Documentation">Merchant API Documentation</a>
               <ul class="toc-list-h2">
+                  <li>
+                    <a href="#api-endpoints" class="toc-h2 toc-link" data-title="API Endpoints">API Endpoints</a>
+                  </li>
                   <li>
                     <a href="#get-all-applications" class="toc-h2 toc-link" data-title="Get all applications">Get all applications</a>
                   </li>
@@ -315,12 +321,9 @@
                   </li>
               </ul>
           </li>
-          <li>
-            <a href="#errors" class="toc-h1 toc-link" data-title="Errors">Errors</a>
-          </li>
       </div>
         <ul class="toc-footer">
-            <li><a href='integrations.divido.com'>For Specific plugins check</a></li>
+            <li><a href='https://integrations.divido.com' targer="_blank">Plugin Installation Instructions</a></li>
         </ul>
     </div>
     <div class="page-wrapper">
@@ -393,7 +396,7 @@
 </tr>
 </tbody></table>
 <h2 id='sequence-guide'>Sequence Guide</h2>
-<p><strong>TODO</strong></p>
+<p><img src="images/sequence-diagram.png" alt="sequence diagram" /></p>
 <h1 id='parts-of-the-integration'>Parts of the integration</h1><h2 id='global-settings'>Global settings</h2>
 <p>To provide the merchant with the possibilites to customise their Divido integration so that it suits their business, you need to add a list of options to the payments section of the webshop settings.</p>
 
@@ -617,7 +620,44 @@ Dependencies: Only shown if Available on finance is set to &quot;Selected plans&
      Collect all plans for the product
  Return all plans that has a minimum price lower than the full order value
  Else
-</code></pre><h1 id='api-documentation'>API Documentation</h1><h2 id='get-all-applications'>Get all applications</h2><h3 id='http-request'>HTTP Request</h3>
+</code></pre><h1 id='http-response-codes'>HTTP Response Codes</h1>
+<p>You may encounter the following response codes. Any unsuccessful response codes will contain more information to help you identify the cause of the problem.</p>
+
+<table><thead>
+<tr>
+<th>Code</th>
+<th>Meaning</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>200</td>
+<td>The request has succeeded.</td>
+</tr>
+<tr>
+<td>201</td>
+<td>The request has been fulfilled and resulted in a new resource being created. The newly created resource can be referenced by the URI(s) returned in the entity of the response, with the most specific URI for the resource given by a Location header field.</td>
+</tr>
+<tr>
+<td>404</td>
+<td>Not Found. The requested resource was not found. The response body will explain which resource was not found.</td>
+</tr>
+<tr>
+<td>500</td>
+<td>Internal Server Error. The server encountered an error while processing your request and failed. Please report this to the Divido support team.</td>
+</tr>
+</tbody></table>
+<h1 id='merchant-api-documentation'>Merchant API Documentation</h1>
+<p>The merchant API is a set of dedicated endpoints to allow custom integrations through a consistent stable interface</p>
+<h2 id='api-endpoints'>API Endpoints</h2>
+<p>To use the Divido API to query data, you will need to send a request to the correct endpoint. Request endpoints should depend on whether you wish to query the live or sandbox environment:</p>
+
+<ul>
+<li><p>Sandbox: https://merchant-api.api.dev.divido.net</p></li>
+<li><p>Live: https://merchant-api.api.divido.net</p></li>
+</ul>
+<h2 id='get-all-applications'>Get all applications</h2>
+<p>Returns all applications for the merchant</p>
+<h3 id='http-request'>HTTP Request</h3>
 <p><code>GET /applications</code></p>
 <h3 id='request'>Request:</h3>
 <ul>
@@ -633,16 +673,150 @@ Dependencies: Only shown if Available on finance is set to &quot;Selected plans&
 <li><code>filter</code>: current_status:proposal|declined</li>
 <li><code>page</code>: 1</li>
 <li><code>sort</code>: current_status</li>
+<li><code>include</code>: merchant_channel</li>
+<li><code>apiKey</code>: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c</li>
 </ul></li>
 <li><p>Body:
 No specific body attributes needed.</p></li>
 </ul>
 <h3 id='response'>Response:</h3>
-<ul>
-<li><p>Status: <strong>0</strong></p></li>
-<li><p>Body:</p></li>
-</ul>
-<h2 id='get-a-single-application'>Get a single application</h2><h3 id='http-request-2'>HTTP Request</h3>
+<blockquote>
+<p>Example Response:</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"meta"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"current_page"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"first_item"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"has_more_pages"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"last_item"</span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"last_page"</span><span class="p">:</span><span class="w"> </span><span class="mi">77</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"per_page"</span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"total"</span><span class="p">:</span><span class="w"> </span><span class="mi">1905</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="s2">"links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"self"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:</span><span class="se">\/\/</span><span class="s2">127.0.0.1:8004</span><span class="se">\/</span><span class="s2">applications?page=1"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"next"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:</span><span class="se">\/\/</span><span class="s2">127.0.0.1:8004</span><span class="se">\/</span><span class="s2">applications?page=2"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"applications"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2de1acad-748e-4249-85a4-a5ea54e72d84"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7d81dd1790b23b4e21ac290b5c57024a"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"finalised"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"finalisation_required"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"current_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"PROPOSAL"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"lender_reference"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"lender_loan_reference"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"form_data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"first_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Ann"</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"middle_names"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"last_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Heselden"</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"phone_number"</span><span class="p">:</span><span class="w"> </span><span class="s2">"02012312312"</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hallsten@me.com"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="s2">"order"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"product_data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+              </span><span class="s2">"sku"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+              </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Goods"</span><span class="p">,</span><span class="w">
+              </span><span class="s2">"quantity"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+              </span><span class="s2">"price"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span><span class="w">
+              </span><span class="s2">"vat"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+              </span><span class="s2">"unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+              </span><span class="s2">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+              </span><span class="s2">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+          </span><span class="p">],</span><span class="w">
+          </span><span class="s2">"refunds"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w">
+          </span><span class="s2">"activations"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w">
+          </span><span class="s2">"cancellations"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="s2">"amounts"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"activatable_amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">65000</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"activated_amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"cancelable_amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">65000</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"cancelled_amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"original_credit_amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">65000</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"current_credit_amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">-34000</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"deposit_amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">35000</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"monthly_payment_amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">5417</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"purchase_price_amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"refundable_amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"refunded_amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"total_repayable_amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">100000</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="s2">"metadata"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w">
+        </span><span class="s2">"activation_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AWAITING-ACTIVATION"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"deposit_status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"UNPAID"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"merchant_reference"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"urls"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"merchant_redirect_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"merchant_checkout_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"merchant_notification_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"application_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"todo"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="s2">"created_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2017-12-20T11:02:24+00:00"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"updated_at"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2017-12-20T11:02:24+00:00"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="s2">"relationships"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"country"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"countries"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GB"</span><span class="w">
+          </span><span class="p">}</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="s2">"currency"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"currencies"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GBP"</span><span class="w">
+          </span><span class="p">}</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="s2">"deposits"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="s2">"application_histories"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+              </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"application-histories"</span><span class="p">,</span><span class="w">
+              </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2c012aeb-cce7-489a-a8c7-16db9d8cbf7a"</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+          </span><span class="p">]</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="s2">"language"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"languages"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"en"</span><span class="w">
+          </span><span class="p">}</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="s2">"merchant"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"merchants"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"M9B458218-0C86-6121-1315-897A84A60E54"</span><span class="w">
+          </span><span class="p">}</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="s2">"merchant_channel"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"merchant-channels"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CFAD1A99F-E377-5C4E-B4E7-20E48E3F8D41"</span><span class="w">
+          </span><span class="p">}</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="s2">"finance_plan"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"finance-plans"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"FBB4B79B2-6C98-127C-8119-66516B188E9B"</span><span class="w">
+          </span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="s2">"links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"self"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:</span><span class="se">\/\/</span><span class="s2">127.0.0.1:8004</span><span class="se">\/</span><span class="s2">applications</span><span class="se">\/</span><span class="s2">2de1acad-748e-4249-85a4-a5ea54e72d84"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="err">...</span><span class="w">
+</span></code></pre><h2 id='get-a-single-application'>Get a single application</h2>
+<p>Returns a single applicaiton</p>
+<h3 id='http-request-2'>HTTP Request</h3>
 <p><code>GET /applications/&lt;APPLICATION_ID&gt;</code></p>
 
 <p>**</p>
@@ -656,17 +830,67 @@ No specific body attributes needed.</p></li>
 <li><p>Url Params:</p>
 
 <ul>
-<li><code>include</code>: deposits,application_histories,language</li>
+<li><code>include</code>: deposits,application_histories,language,activations</li>
+<li><code>apiKey</code>: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c</li>
 </ul></li>
 <li><p>Body:
 No specific body attributes needed.</p></li>
 </ul>
 
+<blockquote>
+<p>Example Response:</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="w">
+</span><span class="p">{</span><span class="w">
+  </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"activations"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"A52B3606-01EE-11E8-B54D-FDCF2114AB2A"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">100000</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"REQUESTED"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"sku"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Tax"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"quantity"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"price"</span><span class="p">:</span><span class="w"> </span><span class="mf">4.94000000000000039079850466805510222911834716796875</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"vat"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w">
+          </span><span class="p">}</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="s2">"reference"</span><span class="p">:</span><span class="w"> </span><span class="s2">"foo ref"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"comment"</span><span class="p">:</span><span class="w"> </span><span class="s2">"foo com"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"image_upload_urls"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"filename"</span><span class="p">:</span><span class="w"> </span><span class="s2">"young-kitten.jpg"</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"uploads</span><span class="se">\/</span><span class="s2">documents</span><span class="se">\/</span><span class="s2">A52D907C-01EE-11E8-B09A-3F280253A9FA"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="s2">"relationships"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"application"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"applications"</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6A050C92-01E3-11E8-B73A-0BC7A7D1BD9B"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="s2">"links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"related"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:</span><span class="se">\/\/</span><span class="s2">127.0.0.1:8004</span><span class="se">\/</span><span class="s2">applications</span><span class="se">\/</span><span class="s2">6A050C92-01E3-11E8-B73A-0BC7A7D1BD9B"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="s2">"links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"self"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:</span><span class="se">\/\/</span><span class="s2">127.0.0.1:8004</span><span class="se">\/</span><span class="s2">applications</span><span class="se">\/</span><span class="s2">6A050C92-01E3-11E8-B73A-0BC7A7D1BD9B</span><span class="se">\/</span><span class="s2">activations</span><span class="se">\/</span><span class="s2">A52B3606-01EE-11E8-B54D-FDCF2114AB2A"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
 <hr>
 <h2 id='create-an-application'>Create an application</h2><h3 id='http-request-3'>HTTP Request</h3>
 <p><code>POST /applications</code></p>
-
-<p>**</p>
 <h3 id='request-3'>Request:</h3>
 <ul>
 <li><p>Headers:</p>
@@ -675,69 +899,70 @@ No specific body attributes needed.</p></li>
 <li><code>X-DIVIDO-API-KEY</code>: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c</li>
 <li><code>Accept</code>: application/json</li>
 </ul></li>
-<li><p>Url Params:
-No specific query parameters needed.</p></li>
+<li><p>Url Params:</p>
+
+<ul>
+<li><code>apiKey</code>: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c</li>
+</ul></li>
 <li><p>Body:</p></li>
 </ul>
 
 <blockquote>
-<p>The Above returns Json Like this:</p>
+<p>Example Payload</p>
 </blockquote>
-<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
-    </span><span class="s2">"token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"example-token-sdihudsh98ds"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"event"</span><span class="p">:</span><span class="w"> </span><span class="s2">"application_store"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"merchant_finance_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"F4CA2E40A-B544-F75F-825A-FFF7613E7230"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"merchant_channel_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"C368EC936-60B5-CD0A-5FCB-7F3867B8FA9D"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"finalisation_required"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"deposit_percentage"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.02</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"age"</span><span class="p">:</span><span class="w"> </span><span class="mi">40</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"country_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GB"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"currency_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GBP"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"language_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"en"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"form_data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-        </span><span class="s2">"firstName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ann"</span><span class="p">,</span><span class="w">
-        </span><span class="s2">"middleNames"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
-        </span><span class="s2">"lastName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"heselden"</span><span class="p">,</span><span class="w">
-        </span><span class="s2">"phoneNumber"</span><span class="p">:</span><span class="w"> </span><span class="s2">"07512345678"</span><span class="w">
-    </span><span class="p">},</span><span class="w">
-    </span><span class="s2">"order"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-        </span><span class="s2">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-            </span><span class="p">{</span><span class="w">
-                </span><span class="s2">"sku"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
-                </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Tax"</span><span class="p">,</span><span class="w">
-                </span><span class="s2">"quantity"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-                </span><span class="s2">"price"</span><span class="p">:</span><span class="w"> </span><span class="mf">4.94</span><span class="p">,</span><span class="w">
-                </span><span class="s2">"vat"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
-                </span><span class="s2">"unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
-                </span><span class="s2">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
-                </span><span class="s2">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w">
-            </span><span class="p">},</span><span class="w">
-            </span><span class="p">{</span><span class="w">
-                </span><span class="s2">"sku"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
-                </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Shipping Total"</span><span class="p">,</span><span class="w">
-                </span><span class="s2">"quantity"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-                </span><span class="s2">"price"</span><span class="p">:</span><span class="w"> </span><span class="mf">8.05</span><span class="p">,</span><span class="w">
-                </span><span class="s2">"vat"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
-                </span><span class="s2">"unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
-                </span><span class="s2">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
-                </span><span class="s2">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w">
-            </span><span class="p">}</span><span class="w">
-        </span><span class="p">]</span><span class="w">
-    </span><span class="p">},</span><span class="w">
-    </span><span class="s2">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">10000</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"deposit_percantage"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.1</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"deposit_amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">10000</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"metadata"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-        </span><span class="s2">"foo"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bar"</span><span class="w">
-    </span><span class="p">},</span><span class="w">
-    </span><span class="s2">"merchant_reference"</span><span class="p">:</span><span class="w"> </span><span class="s2">"made-up-referefce"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"merchant_redirect_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"merchant_checkout_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com"</span><span class="p">,</span><span class="w">
-    </span><span class="s2">"merchant_response_url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com"</span><span class="w">
-</span><span class="p">}</span><span class="w">
-</span></code></pre>
-<hr>
-<h2 id='update-an-application'>Update an application</h2><h3 id='http-request-4'>HTTP Request</h3>
+<pre class="highlight plaintext"><code>{
+    "token": "example-token-sdihudsh98ds",
+    "event": "application_store",
+    "merchant_finance_id": "F4CA2E40A-B544-F75F-825A-FFF7613E7230",
+    "merchant_channel_id": "C368EC936-60B5-CD0A-5FCB-7F3867B8FA9D",
+    "finalisation_required": false,
+    "deposit_percentage": 0.02,
+    "age": 40,
+    "country_id": "GB",
+    "currency_id": "GBP",
+    "language_id": "en",
+    "form_data": {
+        "firstName": "ann",
+        "middleNames": "",
+        "lastName": "heselden",
+        "phoneNumber": "07512345678"
+    },
+    "order": {
+        "items": [
+            {
+                "sku": "",
+                "name": "Tax",
+                "quantity": 1,
+                "price": 4.94,
+                "vat": 0,
+                "unit": "",
+                "image": "",
+                "attributes": null
+            },
+            {
+                "sku": "",
+                "name": "Shipping Total",
+                "quantity": 1,
+                "price": 8.05,
+                "vat": 0,
+                "unit": "",
+                "image": "",
+                "attributes": null
+            }
+        ]
+    },
+    "amount": 10000,
+    "deposit_percantage": 0.1,
+    "deposit_amount": 10000,
+    "metadata": {
+        "foo": "bar"
+    },
+    "merchant_reference": "made-up-referefce",
+    "merchant_redirect_url": "http://example.com",
+    "merchant_checkout_url": "http://example.com",
+    "merchant_response_url": "http://example.com"
+}
+</code></pre><h2 id='update-an-application'>Update an application</h2><h3 id='http-request-4'>HTTP Request</h3>
 <p><code>PUT /applications/&lt;APPLICATION_ID&gt;</code></p>
 
 <p>**</p>
@@ -748,15 +973,26 @@ No specific query parameters needed.</p></li>
 <ul>
 <li><code>X-DIVIDO-API-KEY</code>: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c</li>
 <li><code>Accept</code>: application/json</li>
+<li><code>Content-type</code>: application/json</li>
 </ul></li>
 <li><p>Url Params:
 No specific query parameters needed.</p></li>
-<li><p>Body:
-No specific body attributes needed.</p></li>
+<li><p>Body:</p></li>
 </ul>
 
-<hr>
-<h2 id='get-all-activations'>Get all activations</h2><h3 id='http-request-5'>HTTP Request</h3>
+<blockquote>
+<p>Example Payload</p>
+</blockquote>
+<pre class="highlight plaintext"><code>{
+  "token": "example-token-sdihudsh98ds",
+  "event": "application_update",
+  "form_data": { 
+    "firstName" : "Bob",
+    "middleNames" : "TEst",
+    "lastName" : "heselden"
+  }
+}
+</code></pre><h2 id='get-all-activations'>Get all activations</h2><h3 id='http-request-5'>HTTP Request</h3>
 <p><code>GET /applications/&lt;APPLICATION_ID&gt;/activations</code></p>
 
 <p>**</p>
@@ -786,6 +1022,7 @@ No specific body attributes needed.</p></li>
 <ul>
 <li><code>X-DIVIDO-API-KEY</code>: sandbox_pk_c82185fa3.c423e2ace9177c856b51401f86c3fc2c</li>
 <li><code>Accept</code>: application/json</li>
+<li><code>Content-type</code>: application/json</li>
 </ul></li>
 <li><p>Url Params:
 No specific query parameters needed.</p></li>
@@ -793,6 +1030,56 @@ No specific query parameters needed.</p></li>
 No specific body attributes needed.</p></li>
 </ul>
 
+<blockquote>
+<p>Example Response</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"activations"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"A52B3606-01EE-11E8-B54D-FDCF2114AB2A"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">100000</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"REQUESTED"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"items"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"sku"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Tax"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"quantity"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"price"</span><span class="p">:</span><span class="w"> </span><span class="mf">4.94000000000000039079850466805510222911834716796875</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"vat"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"unit"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w">
+          </span><span class="p">}</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="s2">"reference"</span><span class="p">:</span><span class="w"> </span><span class="s2">"foo ref"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"comment"</span><span class="p">:</span><span class="w"> </span><span class="s2">"foo com"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"image_upload_urls"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"filename"</span><span class="p">:</span><span class="w"> </span><span class="s2">"young-kitten.jpg"</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"uploads</span><span class="se">\/</span><span class="s2">documents</span><span class="se">\/</span><span class="s2">A52D907C-01EE-11E8-B09A-3F280253A9FA"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="s2">"relationships"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"application"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"applications"</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6A050C92-01E3-11E8-B73A-0BC7A7D1BD9B"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="s2">"links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"related"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:</span><span class="se">\/\/</span><span class="s2">127.0.0.1:8004</span><span class="se">\/</span><span class="s2">applications</span><span class="se">\/</span><span class="s2">6A050C92-01E3-11E8-B73A-0BC7A7D1BD9B"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="s2">"links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"self"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:</span><span class="se">\/\/</span><span class="s2">127.0.0.1:8004</span><span class="se">\/</span><span class="s2">applications</span><span class="se">\/</span><span class="s2">6A050C92-01E3-11E8-B73A-0BC7A7D1BD9B</span><span class="se">\/</span><span class="s2">activations</span><span class="se">\/</span><span class="s2">A52B3606-01EE-11E8-B54D-FDCF2114AB2A"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
 <hr>
 <h2 id='create-an-activation'>Create an activation</h2><h3 id='http-request-7'>HTTP Request</h3>
 <p><code>POST /applications/&lt;APPLICATION_ID&gt;/activations</code></p>
@@ -947,16 +1234,74 @@ No specific body attributes needed.</p></li>
 
 <hr>
 <h3 id='response-2'>Response:</h3>
-<ul>
-<li><p>Status: <strong>0</strong></p></li>
-<li><p>Body:</p></li>
-</ul>
+<blockquote>
+<p>Example Response:</p>
+</blockquote>
+<pre class="highlight json tab-json"><code><span class="p">{</span><span class="w">
+  </span><span class="s2">"meta"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"current_page"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"first_item"</span><span class="p">:</span><span class="w"> </span><span class="mi">26</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"has_more_pages"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"last_item"</span><span class="p">:</span><span class="w"> </span><span class="mi">35</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"last_page"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"per_page"</span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"total"</span><span class="p">:</span><span class="w"> </span><span class="mi">35</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="s2">"links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"self"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:</span><span class="se">\/\/</span><span class="s2">127.0.0.1:8004</span><span class="se">\/</span><span class="s2">finance-plans?page=2"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"prev"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:</span><span class="se">\/\/</span><span class="s2">127.0.0.1:8004</span><span class="se">\/</span><span class="s2">finance-plans?page=1"</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"finance-plans"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"F8C963716-2B0B-5E69-D50D-A5E7FF88425C"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"agreement_duration_months"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"deferral_period_months"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"interest_rate_percentage"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"deposit"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"maximum_percentage"</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"minimum_percentage"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="s2">"credit_amount"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"minimum_amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">250</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"maximum_amount"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="s2">"fees"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"instalment_fee_amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+          </span><span class="s2">"setup_fee_amount"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="s2">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6 month 0% demo"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"calculation_family"</span><span class="p">:</span><span class="w"> </span><span class="s2">"f0258b6685684c113bad94d91b8fa02a"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"lender_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123"</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="s2">"relationships"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"country"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"countries"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GB"</span><span class="w">
+          </span><span class="p">}</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="s2">"currency"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"currencies"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"GBP"</span><span class="w">
+          </span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="s2">"links"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"self"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http:</span><span class="se">\/\/</span><span class="s2">127.0.0.1:8004</span><span class="se">\/</span><span class="s2">finance-plans</span><span class="se">\/</span><span class="s2">F8C963716-2B0B-5E69-D50D-A5E7FF88425C"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+ </span><span class="err">...</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
 
+</span></code></pre>
 <hr>
 <h2 id='service-healthcheck'>Service Healthcheck</h2><h3 id='http-request-15'>HTTP Request</h3>
 <p><code>GET /health</code></p>
-
-<p>**</p>
 <h3 id='request-15'>Request:</h3>
 <ul>
 <li><p>Headers:</p>
@@ -970,11 +1315,23 @@ No specific query parameters needed.</p></li>
 No specific body attributes needed.</p></li>
 </ul>
 
+<blockquote>
+<p>Example Response:</p>
+</blockquote>
+<pre class="highlight plaintext"><code>HTTP/1.1 200 OK
+Server: nginx/1.13.8
+Date: Tue, 30 Jan 2018 09:51:39 GMT
+Content-Type: text/html; charset=UTF-8
+Content-Length: 2
+Connection: close
+X-Powered-By: PHP/7.1.9
+Strict-Transport-Security: max-age=31536000
+
+OK
+</code></pre>
 <hr>
 <h2 id='get-all-settlements'>Get all settlements</h2><h3 id='http-request-16'>HTTP Request</h3>
 <p><code>GET /settlements</code></p>
-
-<p>**</p>
 <h3 id='request-16'>Request:</h3>
 <ul>
 <li><p>Headers:</p>
@@ -995,8 +1352,6 @@ No specific body attributes needed.</p></li>
 <hr>
 <h2 id='retrieve-a-settlement'>Retrieve a settlement</h2><h3 id='http-request-17'>HTTP Request</h3>
 <p><code>GET /settlements/&lt;SETTLEMENT_ID&gt;</code></p>
-
-<p>**</p>
 <h3 id='request-17'>Request:</h3>
 <ul>
 <li><p>Headers:</p>
@@ -1012,62 +1367,6 @@ No specific body attributes needed.</p></li>
 </ul>
 
 <hr>
-<h1 id='errors'>Errors</h1>
-<aside class="notice">This error section is stored in a separate file in `includes/_errors.md`. Slate allows you to optionally separate out your docs into many files...just save them to the `includes` folder and add them to the top of your `index.md`'s frontmatter. Files are included in the order listed.</aside>
-
-<p>The Kittn API uses the following error codes:</p>
-
-<table><thead>
-<tr>
-<th>Error Code</th>
-<th>Meaning</th>
-</tr>
-</thead><tbody>
-<tr>
-<td>400</td>
-<td>Bad Request -- Your request sucks.</td>
-</tr>
-<tr>
-<td>401</td>
-<td>Unauthorized -- Your API key is wrong.</td>
-</tr>
-<tr>
-<td>403</td>
-<td>Forbidden -- The kitten requested is hidden for administrators only.</td>
-</tr>
-<tr>
-<td>404</td>
-<td>Not Found -- The specified kitten could not be found.</td>
-</tr>
-<tr>
-<td>405</td>
-<td>Method Not Allowed -- You tried to access a kitten with an invalid method.</td>
-</tr>
-<tr>
-<td>406</td>
-<td>Not Acceptable -- You requested a format that isn&#39;t json.</td>
-</tr>
-<tr>
-<td>410</td>
-<td>Gone -- The kitten requested has been removed from our servers.</td>
-</tr>
-<tr>
-<td>418</td>
-<td>I&#39;m a teapot.</td>
-</tr>
-<tr>
-<td>429</td>
-<td>Too Many Requests -- You&#39;re requesting too many kittens! Slow down!</td>
-</tr>
-<tr>
-<td>500</td>
-<td>Internal Server Error -- We had a problem with our server. Try again later.</td>
-</tr>
-<tr>
-<td>503</td>
-<td>Service Unavailable -- We&#39;re temporarily offline for maintenance. Please try again later.</td>
-</tr>
-</tbody></table>
 
       </div>
       <div class="dark-box">
